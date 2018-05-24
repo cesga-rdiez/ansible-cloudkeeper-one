@@ -1,0 +1,3 @@
+---
+- name: restart cloudkeeper-one
+  service: name=cloudkeeper-one state=restarted

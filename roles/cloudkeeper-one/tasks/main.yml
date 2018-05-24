@@ -1,0 +1,38 @@
+- name: Install predependences (centos-release-qemu-ev)
+  package: centos-release-qemu-ev state=latest
+
+- name: Install predependences (lcg-CA)
+  package: lcg-CA state=latest
+
+- name: Install cloudkeeper
+  package: cloudkeeper state=latest
+
+- name: Install cloudkeeper-one
+  package: cloudkeeper-one state=latest
+
+- name: ops VO lcgvoms24.cern.ch.lsc file
+  template: src=lcgvoms24.cern.ch.lsc.j2 dest=/etc/grid-security/vomsdir/ops/lcgvoms24.cern.ch.lsc owner=root group=root mode=0644
+
+- name: ops VO voms2.cern.ch.lsc file
+  template: src=voms2.cern.ch.lsc.j2 dest=/etc/grid-security/vomsdir/ops/voms2.cern.ch.lsc owner=root group=root mode=0644
+
+- name: cloudkeeper.yml
+  template: src=cloudkeeper.yml.j2 dest=/etc/cloudkeeper/cloudkeeper.yml owner=cloudkeeper group=cloudkeeper mode=0640 
+
+- name: cloudkeeper-one.yml
+  template: src=cloudkeeper-one.yml.j2 dest=/etc/cloudkeeper-one/cloudkeeper-one.yml owner=cloudkeeper-one group=cloudkeeper-one mode=0640
+  notify: restart cloudkeeper-one
+
+- name: template.erb
+  template: src=template.erb.j2 dest=/etc/cloudkeeper-one/templates/template.erb owner=cloudkeeper-one group=cloudkeeper-one mode=0640
+  notify: restart cloudkeeper-one
+
+- name: Start cloudkeeper-one service
+  service: name=cloudkeeper-one state=started enabled=yes
+  tags: cloudkeeper-one
+
+- name: Start cloudkeeper-cron service
+  service: name=cloudkeeper-cron state=started enabled=yes
+  tags: cloudkeeper-cron
+
+
